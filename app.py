@@ -43,7 +43,7 @@ or
 Stay on Task: Do not engage in casual conversation or answer questions that are outside the scope of your designated function. If a user tries to engage in off-topic conversation, politely redirect them back to your purpose or use the \"I don't know\" response from Rule #4."""
 
 # Grounding Data (unchanged from original app.py)
-GROUNDING_DATA = '
+GROUNDING_DATA = """
 Հավելված
 ՀՀ քաղաքաշինության կոմիտեի նախագահի
 2023 թվականի մայիսի 22-ի
@@ -13233,7 +13233,7 @@ V. ՆԱԽԱԳԾԱՅԻՆ ՓԱՍՏԱԹՂԹԵՐԻ ԿԱԶՄՈՒՄ ՆԵՐԱՌՎՈՂ �
 
 ամիս
 
-'
+"""
 # End of Grounding Data
 # Initialize the Generative Model with updated model name
 model = genai.GenerativeModel(
