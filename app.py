@@ -13236,9 +13236,18 @@ V. ՆԱԽԱԳԾԱՅԻՆ ՓԱՍՏԱԹՂԹԵՐԻ ԿԱԶՄՈՒՄ ՆԵՐԱՌՎՈՂ �
 """
 # End of Grounding Data
 # Initialize the Generative Model with updated model name
+SAFETY_SETTINGS = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_LOW_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_LOW_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_LOW_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_LOW_AND_ABOVE"},
+]
+
+# Initialize the Generative Model
 model = genai.GenerativeModel(
-    model_name="gemini-2.5-flash-preview-05-20",
-    system_instruction=SYSTEM_INSTRUCTIONS,
+    model_name="gemini-1.5-flash-preview-05-20",
+    system_instruction=SYSTEM_INSTRUCTIONS
+    # Safety settings are now applied per-request, not on model initialization.
 )
 
 @app.route('/chat', methods=['POST'])
@@ -13264,21 +13273,11 @@ def chat():
             *user_history
         ]
 
-        # Define generation config with safety settings
-        generation_config = {
-            "safety_settings": {
-                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            },
-            "response_mime_type": "text/plain",
-        }
-
-        # Generate content using the model with generation config
+        # Generate content using the model
+        # **FIX:** Moved safety_settings from the model constructor to the generate_content call.
         response = model.generate_content(
             full_context,
-            generation_config=generation_config
+            safety_settings=SAFETY_SETTINGS
         )
         
         return jsonify({'response': response.text})
@@ -13296,3 +13295,4 @@ if __name__ == '__main__':
     # Use environment variable for port, compatible with hosting services
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
