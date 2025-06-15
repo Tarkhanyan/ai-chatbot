@@ -13245,7 +13245,7 @@ SAFETY_SETTINGS = [
 
 # Initialize the Generative Model
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash-preview-05-20",
+    model_name="gemini-2.5-flash-preview-05-20",
     system_instruction=SYSTEM_INSTRUCTIONS
     # Safety settings are now applied per-request, not on model initialization.
 )
